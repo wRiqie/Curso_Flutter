@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
- 
+
     _getAllContacts();
   }
 
@@ -61,10 +61,9 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image: contacts[index].img != null ?
-                      FileImage(File(contacts[index].img.toString())) : 
-                        AssetImage("images/person.png") as ImageProvider
-                  ),
+                      image: contacts[index].img != null
+                          ? FileImage(File(contacts[index].img.toString()))
+                          : AssetImage("images/person.png") as ImageProvider),
                 ),
               ),
               Padding(
@@ -72,24 +71,27 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(contacts[index].name ?? "",
+                    Text(
+                      contacts[index].name ?? "",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(contacts[index].email ?? "",
+                    Text(
+                      contacts[index].email ?? "",
                       style: TextStyle(
                         fontSize: 14,
                       ),
                     ),
-                    Text(contacts[index].phone ?? "",
+                    Text(
+                      contacts[index].phone ?? "",
                       style: TextStyle(
                         fontSize: 14,
                       ),
                     ),
                   ],
-                ),  
+                ),
               )
             ],
           ),
@@ -101,52 +103,78 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showOptions(BuildContext context, int index){
+  void _showOptions(BuildContext context, int index) {
     showModalBottomSheet(
-      context: context,
-       builder: (context){
-         return BottomSheet(
-           builder: (context){
-             return Container(
-               padding: EdgeInsets.all(10),
-               child: Column(
-                 children: [
-                   TextButton(
-                     child: Text("Ligar", style: TextStyle(color: Colors.red, fontSize: 20),),
-                     onPressed: (){
-
-                     },
-                   ),
-                   TextButton(
-                     child: Text("Ligar", style: TextStyle(color: Colors.red, fontSize: 20),),
-                     onPressed: (){
-                       
-                     },
-                   ),
-                   TextButton(
-                     child: Text("Ligar", style: TextStyle(color: Colors.red, fontSize: 20),),
-                     onPressed: (){
-                       
-                     },
-                   ),
-                 ],
-               ),
-             );
-           },
-           onClosing: () {},
-         );
-       }
-    );
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            builder: (context) {
+              return Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextButton(
+                        // ignore: prefer_const_constructors
+                        child: Text(
+                          "Ligar",
+                          // ignore: prefer_const_constructors
+                          style: TextStyle(color: Colors.red, fontSize: 20),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextButton(
+                        // ignore: prefer_const_constructors
+                        child: Text(
+                          "Editar",
+                          // ignore: prefer_const_constructors
+                          style: TextStyle(color: Colors.red, fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showContactPage(contact: contacts[index]);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextButton(
+                        // ignore: prefer_const_constructors
+                        child: Text(
+                          "Excluir",
+                          // ignore: prefer_const_constructors
+                          style: TextStyle(color: Colors.red, fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            helper.deleteContact(contacts[index].id);
+                            contacts.removeAt(index);
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            onClosing: () {},
+          );
+        });
   }
 
-  void _showContactPage({Contact? contact}) async{
-    final recContact = await Navigator.push(context, 
-    MaterialPageRoute(builder: (context) => ContactPage(contact: contact)));
-    if(recContact != null){
-      if(contact != null){
+  void _showContactPage({Contact? contact}) async {
+    final recContact = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ContactPage(contact: contact)));
+    if (recContact != null) {
+      if (contact != null) {
         await helper.updateContact(recContact);
-      }
-      else{
+      } else {
         await helper.saveContact(recContact);
       }
       _getAllContacts();
@@ -156,7 +184,7 @@ class _HomePageState extends State<HomePage> {
   void _getAllContacts() {
     helper.getAllContacts().then((list) {
       for (Contact item in list) {
-        item.img=null;
+        item.img = null;
         helper.updateContact(item);
         print(item);
       }
