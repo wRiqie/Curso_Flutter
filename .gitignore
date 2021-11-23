@@ -20,3 +20,4 @@ doc/api/
 *.js.deps
 *.js.map
 chat/android/app/google-services.json
+loja_virtual/android/app/google-services.json
